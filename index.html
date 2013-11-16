@@ -1,0 +1,84 @@
+<html>
+<head>
+	<!-- <link  -->
+	<script src="js/jquery-2.0.3.js" ></script>
+	<script src="js/jquery.mobile-1.3.2.js" ></script>
+	<script src="js/plugins/cross-domain-ajax/jquery.xdomainajax.js"></script>
+	<script language="JavaScript">
+		const ACHEWOOD_BASE_URL = 'http://www.achewood.com';
+		var $prevComicLink;
+		var $nextComicLink;
+		var $comicTarget;
+
+		var loadAchewood = function (event) { 
+			var url;
+			var loadUrl = ACHEWOOD_BASE_URL;
+
+			//if the parameter is passed, use it to load the correct comic url
+			if (event && event.data) { url = event.data.urlParam; }
+			if (url) { loadUrl = ACHEWOOD_BASE_URL + '/' + url; }
+			$.get(loadUrl, parseAchewood );
+		}
+
+		var parseAchewood = function( achewoodIndex ) {
+            //cross platform xml object creation from w3schools
+            try { //Internet Explorer
+              xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+              xmlDoc.async="false";
+              xmlDoc.loadXML(achewoodIndex.responseText);
+            }
+            catch(e) {
+              try { // Firefox, Mozilla, Opera, etc.
+                parser = new DOMParser();
+                xmlDoc = parser.parseFromString(achewoodIndex.responseText,"text/xml");
+			  }
+              catch(e) {
+                alert(e.message);
+                return;
+	          }
+            }
+
+            getComic(xmlDoc.getElementsByTagName("body")[0].innerHTML);
+
+            // console.log(xmlDoc.getElementsByTagName("body")[0].innerHTML); //[0].childNodes[0].nodeValue));
+        }
+
+		var getComic = function( content ) {
+
+			$comicTarget = $("img#comicTarget");
+			$prevComicLink = $("a#comicPrev");
+			$nextComicLink = $("a#comicNext");
+
+			var $comic = $("img.comic", $(content));
+			
+			$comicTarget.attr({
+				src: ACHEWOOD_BASE_URL + $comic.attr("src") //,
+				// title: $comic.attr("title")		
+			});
+			$("div#comicAlt").html($comic.attr("title"));
+			
+			$prevComicLink.unbind('click');
+			$prevComicLink.click({urlParam: $( "a.dateNav[title=\"Previous comic\"]", $(content)).attr("href") }, loadAchewood);
+
+			var nextUrl = $("a.dateNav[title=\"Next comic\"]", $(content)).attr("href");
+			$nextComicLink.unbind('click');
+			if (nextUrl) { 
+				$nextComicLink.click({urlParam: nextUrl}, loadAchewood);
+			}
+		}
+		$( document ).ready( loadAchewood() );
+	</script>
+
+</head>
+<body>
+
+	<div>
+		<img id="comicTarget" src="img/hyperbole.png" />
+		<div id="comicAlt">&nbsp;</div>
+		<div class="prev-comic"><a id="comicPrev" href="#">Prev</a></div>
+		<div class="next-comic"><a id="comicNext" href="#">Next</a></div>
+	</div>
+
+</body>
+
+</html>
