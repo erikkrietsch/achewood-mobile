@@ -44,8 +44,6 @@
 
 			$.get(loadUrl, parseAchewood );
 
-			$.mobile.loading('hide');
-
 		}
 
 		function parseAchewood( achewoodIndex ) {
@@ -82,13 +80,20 @@
 			$("div#comicAlt").html($comic.attr("title"));
 			
 			$prevComicLink.unbind('click');
-			$prevComicLink.click({urlParam: $( "a.dateNav[title=\"Previous comic\"]", $(content)).attr("href") }, loadAchewood);
+			$prevComicLink.achewoodLink = $( "a.dateNav[title=\"Previous comic\"]", $(content)).attr("href");
+			$prevComicLink.click({urlParam: $prevComicLink.achewoodLink }, loadAchewood);
+			console.log($prevComicLink.achewoodLink);
 
 			var nextUrl = $("a.dateNav[title=\"Next comic\"]", $(content)).attr("href");
 			$nextComicLink.unbind('click');
 			if (nextUrl) { 
+				$nextComicLink.achewoodLink = nextUrl;
 				$nextComicLink.click({urlParam: nextUrl}, loadAchewood);
+			} else {
+				$nextComicLink.disable;
 			}
+
+			$.mobile.loading('hide');
 		}
 	</script>
 </head>
