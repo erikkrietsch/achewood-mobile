@@ -18,7 +18,10 @@
 			"Here comes a special boy!",
 			"We got the chessboard out but you playin' whack-a-mole.",
 			"You big hot tranny mess!",
-			"You can do whatever you want in life."
+			"You can do whatever you want in life.",
+			"I'm definitely not afraid of the police right now!",
+			"Kiss my ass, bitch! I'll be at Dwayne's!",
+			"Calculating eggs & milk..."
 		];
 
 		function loadPage(event) {
@@ -30,8 +33,6 @@
 			$comicTarget = $("img#comicTarget");
 			$prevComicLink = $("a#comicPrev");
 			$nextComicLink = $("a#comicNext");
-			
-			$comicTarget.on("swiperight", {urlParam: $prevComicLink.achewoodLink}, loadAchewood);
 
 			loadAchewood(event);
 		}
@@ -83,10 +84,11 @@
 			var $comic = $("img.comic", $(content));
 			
 			$comicTarget.attr({
-				src: ACHEWOOD_BASE_URL + $comic.attr("src") //,
+				src: ACHEWOOD_BASE_URL + $comic.attr("src") ,
+				width: "100%"
 				// title: $comic.attr("title")		
 			});
-			$comicTarget.panzoom();
+
 			$("div#comicAlt").html($comic.attr("title"));
 			
 			$prevComicLink.unbind('click');
@@ -101,7 +103,7 @@
 			} else {
 				$nextComicLink.buttonMarkup('disable');
 			}
-
+			$comicTarget.panzoom('reset');
 			$.mobile.loading('hide');
 		}
 	</script>
@@ -116,6 +118,18 @@
 		<div id="comicTarget">
 			<img id="comicTarget" src="img/1x1.png" />
 		</div>
+		<script>
+			(function() {
+	          var $section = $('div#comicTarget');
+	          $section.find('img#comicTarget').panzoom({
+	            startTransform: 'scale(0.5)',
+	            increment: 0.1,
+	            minScale: 1,
+	            contain: 'invert'
+	          }).panzoom('zoom');
+	        })();
+		</script>
+
 		<div id="comicAlt">&nbsp;</div>
 	</div>
 	<div data-role="footer">
