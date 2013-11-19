@@ -2,10 +2,28 @@
 <html>
 <head>
 	<title>Achewood! ...mobile!</title>
+	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.3.2.css">
 	<style>
-		h1.logo: { font-family: "Lobster"; }
+		@font-face {
+			font-family: 'Lobster' ; 
+				src: url('css/fonts/Lobster-webfont.eot') ;
+				src: url('css/fonts/Lobster-webfont.eot?#iefix') 
+						format('embedded-opentype'), url('css/fonts/Lobster-webfont.woff') 
+						format('woff'), url('css/fonts/Lobster-webfont.ttf') 
+						format('truetype'), url('css/fonts/Lobster-webfont.svg#lobster_1.4regular') 
+						format('svg') ;
+				font-weight: normal ; 
+				font-style: normal ; 
+		}
+		h1.logo { font-family: Lobster; };
+		.bigfont { font-size: 60pt; }
+		.comicFooter { 
+			border-left-width: 4;
+			border-right-width: 4;
+			margin:auto;
+		}
 	</style>
 	<script src="js/jquery-2.0.3.js" ></script>
 	<script src="js/jquery.mobile-1.3.2.js" ></script>
@@ -22,16 +40,16 @@
 			"We got the chessboard out but you playin' whack-a-mole.",
 			"You big hot tranny mess!",
 			"You can do whatever you want in life.",
-			"I'm definitely not afraid of the police right now!",
-			"Kiss my ass, bitch! I'll be at Dwayne's!",
-			"Calculating eggs & milk..."
+			"I am DEFINITELY not afraid of the fucking POLICE right now!",
+			"KISS MY ASS, BITCH! I'LL BE AT DUANE'S!",
+			"Calculating eggs & milk...",
+			"Think you can hang with the dirtiest dudes in town?",
+			"You have just won seven dollars, please hold.",
+			"snoopys balls",
+			"HEY IS THIS BLOOD BEAGLE"
 		];
 
 		function loadPage(event) {
-
-			$altTextLink = $("a#comicAltLink");
-			$altTextLink.unbind('click');
-			$altTextLink.click(function() { $.mobile.loading('show', {text: 'loading!', theme: 'c', textonly: false}); } );
 
 			$comicTarget = $("img#comicTarget");
 			$prevComicLink = $("a#comicPrev");
@@ -88,8 +106,7 @@
 			
 			$comicTarget.attr({
 				src: ACHEWOOD_BASE_URL + $comic.attr("src") ,
-				width: "100%",
-				height: "100%"
+				width: "100%"
 				// title: $comic.attr("title")		
 			});
 
@@ -112,32 +129,54 @@
 		}
 	</script>
 </head>
-<body data-role="page">
-	<div data-role="header">
-		<a class="ui-btn-left" data-iconpos="left" data-icon="arrow-l" id="comicPrev" href="#">Prev</a>
-		<h1 class="logo">achewood.</h1>
-		<a class="ui-btn-right" data-iconpos="right" data-icon="arrow-r" id="comicNext" href="#">Next</a>
-	</div>
-	<div data-role="content">
-		<div id="comicTarget">
-			<img id="comicTarget" src="img/1x1.png" />
+<body >
+	<div data-role="page" id="comic">
+		<div data-role="header" data-position="fixed">
+			<a class="ui-btn-left" data-iconpos="left" data-icon="arrow-l" id="comicPrev" href="#">Prev</a>
+			<h1 class="logo"><span class="bigfont">a</span>chewood.</h1>
+			<a class="ui-btn-right" data-iconpos="right" data-icon="arrow-r" id="comicNext" href="#">Next</a>
 		</div>
-		<script>
-			(function() {
-	          var $section = $('div#comicTarget');
-	          $section.find('img#comicTarget').panzoom({
-	            startTransform: 'scale(0.5)',
-	            increment: 0.5,
-	            minScale: 1,
-	            contain: 'invert'
-	          }).panzoom('zoom');
-	        })();
-		</script>
-
-		<div id="comicAlt">&nbsp;</div>
+		<div data-role="content">
+			<div id="comicTarget">
+				<img id="comicTarget" src="img/1x1.png" />
+			</div>
+			<script>
+				(function() {
+		          var $section = $('div#comicTarget');
+		          $section.find('img#comicTarget').panzoom({
+		            startTransform: 'scale(0.5)',
+		            increment: 0.5,
+		            minScale: 1,
+		            contain: 'invert'
+		          }).panzoom('zoom');
+		        })();
+			</script>
+		</div>
+		<div data-role="footer" class="ui-grid-b" >
+			<div class="ui-block-a" >
+				<a href="#altText" data-role="button" data-iconpos="notext" data-rel="dialog" data-transition="pop" data-icon="info">alt text</a>
+			</div>
+			<div class="ui-block-b" style="text-align: center; ">
+				<a data-role="button" data-mini="true" data-theme="b" data-inline="true" data-iconpos="left" data-icon="star" href="http://achewood.myshopify.com/" target="_blank" id="shopLink">Shop</a>
+			</div>
+			<div class="ui-block-c" style="text-align: right;">
+				<a href="#" data-role="button" data-iconpos="right" data-rel="dialog" data-inline="true" data-mini="true" data-icon="arrow-d">Arcs</a>
+			</div>
+		</div>
 	</div>
-	<div data-role="footer">
-		<a data-role="button" data-theme="b" data-iconpos="left" data-icon="star" href="http://achewood.myshopify.com/" target="_blank" id="shopLink">Shop Achewood, Feel Classy.</a>
+
+	<div data-role="page" id="altText">
+		<div data-role="header" data-theme="b">
+			<h1 class="logo">alt-text</h1>
+		</div><!-- /header -->
+		<div data-role="content" id="comicAlt">
+			WE ARE LOOKING FOR SOMEONE NEW TO WRITE THE ALT TEXT BECAUSE THE LAST GUY QUIT. SEND RESUMES TO CHRIS AT ACHEWOOD.COM
+		</div>
+		<div data-role="footer" data-theme="b">
+			<h6>
+				<a href="#comic" data-role="button" data-inline="true" data-mini="true" data-icon="check" data-theme="d">Got it</a>
+			</h6>
+		</div>
 	</div>
 </body>
 
