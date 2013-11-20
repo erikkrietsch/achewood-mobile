@@ -36,6 +36,7 @@
 		var $nextComicLink;
 		var $comicTarget;
 		var $altTextLink;
+		var $arcList; 
 		var loadingQuotes = [
 			"Here comes a special boy!",
 			"We got the chessboard out but you playin' whack-a-mole.",
@@ -56,6 +57,7 @@
 			$comicTarget = $("img#comicTarget");
 			$prevComicLink = $("a#comicPrev");
 			$nextComicLink = $("a#comicNext");
+			$arcList = $("ul#arcList");
 
 			loadAchewood(event);
 		}
@@ -105,7 +107,7 @@
 		function getComic( content ) {
 
 			var $comic = $("img.comic", $(content));
-			
+		
 			$comicTarget.attr({
 				src: ACHEWOOD_BASE_URL + $comic.attr("src") ,
 				width: "100%" //,
@@ -114,6 +116,8 @@
 			});
 
 			$("div#comicAlt").html($comic.attr("title"));
+
+			$comicTarget.bind('taphold', function() {alert('tuppold');} );
 			
 			$prevComicLink.unbind('click');
 			$prevComicLink.achewoodLink = $( "a.dateNav[title=\"Previous comic\"]", $(content)).attr("href");
@@ -127,7 +131,25 @@
 			} else {
 				$nextComicLink.disable;
 			}
-			$comicTarget.panzoom('reset');
+			// $comicTarget.panzoom('reset');
+
+			var $arcs = $("select[name='date'] option", $(content));
+			if ($arcList.children().length<=1) {
+				console.log("loading arcs...")
+				$arcs.each(function(i) {
+					// if (i==0) {continue;}
+					$arcList.append($("<li/>", { 
+							"data-role": "listdivider"
+						}).append($("<a/>", {
+							class: "arcLink",
+							href: "#comic?" + $(this).val(),
+							text: $(this).text(),
+							achewoodLink: "index.php?date=" + $(this).val(),
+						})).click({urlParam: "index.php?date=" + $(this).val() }, loadAchewood) );
+					
+				});
+			}
+
 			$.mobile.loading('hide');
 		}
 	</script>
@@ -163,7 +185,7 @@
 				<a data-role="button" data-mini="true" data-theme="b" data-inline="true" data-iconpos="left" data-icon="star" href="http://achewood.myshopify.com/" target="_blank" id="shopLink">Shop</a>
 			</div>
 			<div class="ui-block-c" style="text-align: right;">
-				<a href="#" data-role="button" data-iconpos="right" data-rel="dialog" data-inline="true" data-mini="true" data-icon="arrow-d">Arcs</a>
+				<a href="#arcList" data-role="button" data-iconpos="right" data-rel="dialog" data-inline="true" data-mini="true" data-icon="arrow-d">Arcs</a>
 			</div>
 		</div>
 	</div>
@@ -181,6 +203,21 @@
 			</h6>
 		</div>
 	</div>
+
+	<div data-role="page" id="arcList">
+		<div data-role="header" data-theme="b">
+			<h1 class="logo">story arcs</h1>
+		</div><!-- /header -->
+		<ul data-role="listview" id="arcList">
+			<li><a href="#comic">Current Comic</a></li>
+		</ul>
+		<div data-role="footer" data-theme="b">
+			<h6>
+				<!-- <a href="#comic" data-role="button" data-inline="true" data-mini="true" data-icon="check" data-theme="d">Got it</a> -->
+			</h6>
+		</div>
+	</div>
+
 </body>
 
 <script language="javascript" >
