@@ -47,7 +47,8 @@
 			"Think you can hang with the dirtiest dudes in town?",
 			"You have just won seven dollars, please hold.",
 			"snoopys balls",
-			"HEY IS THIS BLOOD BEAGLE"
+			"HEY IS THIS BLOOD BEAGLE",
+			"Suckin' Dick Bought This Van"
 		];
 
 		function loadPage(event) {
@@ -107,8 +108,8 @@
 			
 			$comicTarget.attr({
 				src: ACHEWOOD_BASE_URL + $comic.attr("src") ,
-				width: "100%",
-				height: "100%"
+				width: "100%" //,
+				// height: "100%"
 				// title: $comic.attr("title")		
 			});
 
@@ -124,7 +125,7 @@
 				$nextComicLink.achewoodLink = nextUrl;
 				$nextComicLink.click({urlParam: nextUrl}, loadAchewood);
 			} else {
-				$nextComicLink.buttonMarkup('disable');
+				$nextComicLink.disable;
 			}
 			$comicTarget.panzoom('reset');
 			$.mobile.loading('hide');
@@ -132,29 +133,29 @@
 	</script>
 </head>
 <body >
-	<div data-role="page" id="comic">
-		<div data-role="header" data-position="fixed">
+	<div data-role="page" id="comic" >
+		<div data-role="header" data-disable-page-zoom="false" data-position="fixed">
 			<a class="ui-btn-left" data-iconpos="left" data-icon="arrow-l" id="comicPrev" href="#">Prev</a>
 			<h1 class="logo"><span class="bigfont">a</span>chewood.</h1>
 			<a class="ui-btn-right" data-iconpos="right" data-icon="arrow-r" id="comicNext" href="#">Next</a>
 		</div>
-		<div data-role="content">
-			<div id="comicTarget">
+		<div data-role="content" >
+			<div id="comicTarget" style="width: 100%; height: 100%;" >
 				<img id="comicTarget" src="img/1x1.png" />
 			</div>
 			<script>
-				(function() {
-		          var $section = $('div#comicTarget');
-		          $section.find('img#comicTarget').panzoom({
-		            startTransform: 'scale(0.5)',
-		            increment: 0.5,
-		            minScale: 1,
-		            contain: 'invert'
-		          }).panzoom('zoom');
-		        })();
+				// (function() {
+		  //         var $section = $('div#comicTarget');
+		  //         $section.find('img#comicTarget').panzoom({
+		  //           startTransform: 'scale(0.5)',
+		  //           increment: 0.5,
+		  //           minScale: 1,
+		  //           contain: 'invert'
+		  //         }).panzoom('zoom');
+		  //       })();
 			</script>
 		</div>
-		<div data-role="footer" class="ui-grid-b" data-position="fixed">
+		<div data-role="footer" class="ui-grid-b" data-position="fixed" data-disable-page-zoom="false">
 			<div class="ui-block-a" >
 				<a href="#altText" data-role="button" data-inline="true" data-mini="true" data-iconpos="left" data-rel="dialog" data-transition="pop" data-icon="info">alt-text</a>
 			</div>
