@@ -47,9 +47,16 @@
 			"Calculating eggs & milk...",
 			"Think you can hang with the dirtiest dudes in town?",
 			"You have just won seven dollars, please hold.",
-			"snoopys balls",
+			"ENTERING DEATH MODE. WHAT DID YOU DO.",
 			"HEY IS THIS BLOOD BEAGLE",
-			"Suckin' Dick Bought This Van"
+			"Suckin' Dick Bought This Van",
+			"I'm sorry that I straight up roasted your ding dong",
+			"I DECLARE MYSELF... BROADICUS DICKUS!",
+			"FOOD CHAIN! GET USED TO IT!",
+			"You are a toilet seat that smokes a cigar",
+			"Dude, did you just invent... hip-hobbit?",
+			"Don't worry, I'll give you a sign. The sign will be that life is awesome.",
+			"That golden action is so crunchy"
 		];
 
 		function loadPage(event) {
@@ -57,6 +64,7 @@
 			$comicTarget = $("img#comicTarget");
 			$prevComicLink = $("a#comicPrev");
 			$nextComicLink = $("a#comicNext");
+			$randomLink = $("a#randomLink");
 			$arcList = $("ul#arcList");
 
 			loadAchewood(event);
@@ -65,10 +73,23 @@
 		function loadAchewood(event) { 
 			var url;
 			var loadUrl = ACHEWOOD_BASE_URL;
+			var date = getParameterByName("date");
 
+			console.log(date);
 			//if the parameter is passed, use it to load the correct comic url
-			if (event && event.data) { url = event.data.urlParam; }
-			if (url) { loadUrl = ACHEWOOD_BASE_URL + '/' + url; }
+			if (date) { url = "index.php?date=" + getParameterByName("date"); }
+			if (event && event.data && event.data.urlParam) { url = event.data.urlParam; }
+			if (url) { 
+				if (url == "random") {
+					loadUrl = "http://www.ohnorobot.com/random.pl?comic=636"; //this is consistently the "random" link on Achewood.com
+				} else { 
+					loadUrl = ACHEWOOD_BASE_URL + '/' + url; 
+				
+				}
+				
+			}
+
+			console.log(loadUrl);
 
 
 			$.mobile.loading('show', {
@@ -77,7 +98,11 @@
 				textVisible: true
 			});
 
-			$.get(loadUrl, parseAchewood );
+			$.ajax({
+				url: loadUrl, 
+				type: 'GET',
+				success: parseAchewood
+			});
 
 		}
 
@@ -98,16 +123,21 @@
                 return;
 	          }
             }
-
+            console.log('Achewood parsed, calling getComic...');
             getComic(xmlDoc.getElementsByTagName("body")[0].innerHTML);
+        }
 
-            // console.log(xmlDoc.getElementsByTagName("body")[0].innerHTML); //[0].childNodes[0].nodeValue));
+        function getParameterByName(name){    
+        	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        	var results = regex.exec(location.search);
+        	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g," "));
         }
 
 		function getComic( content ) {
 
 			var $comic = $("img.comic", $(content));
-		
+			console.log($comic);
 			$comicTarget.attr({
 				src: ACHEWOOD_BASE_URL + $comic.attr("src") ,
 				width: "100%" //,
@@ -117,35 +147,33 @@
 
 			$("div#comicAlt").html($comic.attr("title"));
 
-			$comicTarget.bind('taphold', function() {alert('tuppold');} );
-			
-			$prevComicLink.unbind('click');
 			$prevComicLink.achewoodLink = $( "a.dateNav[title=\"Previous comic\"]", $(content)).attr("href");
-			$prevComicLink.click({urlParam: $prevComicLink.achewoodLink }, loadAchewood);
-
+			$prevComicLink.attr("href", "?" + $prevComicLink.achewoodLink.split("?")[1]);
+			
 			var nextUrl = $("a.dateNav[title=\"Next comic\"]", $(content)).attr("href");
-			$nextComicLink.unbind('click');
+			
 			if (nextUrl) { 
 				$nextComicLink.achewoodLink = nextUrl;
-				$nextComicLink.click({urlParam: nextUrl}, loadAchewood);
+				$nextComicLink.attr("href", "?" + $nextComicLink.achewoodLink.split("?")[1]);
 			} else {
 				$nextComicLink.disable;
 			}
-			// $comicTarget.panzoom('reset');
+
+			$randomLink.click({urlParam: "random"}, loadAchewood);
 
 			var $arcs = $("select[name='date'] option", $(content));
-			if ($arcList.children().length<=1) {
-				console.log("loading arcs...")
+			if ($arcList.children().length<=2) {
+				
 				$arcs.each(function(i) {
-					// if (i==0) {continue;}
+					if (i==0) { $(this).text("The Very Beginning"); }
 					$arcList.append($("<li/>", { 
 							"data-role": "listdivider"
 						}).append($("<a/>", {
 							class: "arcLink",
-							href: "#comic?" + $(this).val(),
+							href: "?date=" + $(this).val(),
 							text: $(this).text(),
 							achewoodLink: "index.php?date=" + $(this).val(),
-						})).click({urlParam: "index.php?date=" + $(this).val() }, loadAchewood) );
+						}).attr("data-ajax", "false")));
 					
 				});
 			}
@@ -157,25 +185,14 @@
 <body >
 	<div data-role="page" id="comic" >
 		<div data-role="header" data-disable-page-zoom="false" data-position="fixed">
-			<a class="ui-btn-left" data-iconpos="left" data-icon="arrow-l" id="comicPrev" href="#">Prev</a>
-			<h1 class="logo"><span class="bigfont">a</span>chewood.</h1>
-			<a class="ui-btn-right" data-iconpos="right" data-icon="arrow-r" id="comicNext" href="#">Next</a>
+			<a class="ui-btn-left" data-ajax="false" data-iconpos="left" data-icon="arrow-l" id="comicPrev" href="#">Prev</a>
+			<h1 class="logo">achewood.</h1>
+			<a class="ui-btn-right" data-ajax="false" data-iconpos="right" data-icon="arrow-r" id="comicNext" href="#">Next</a>
 		</div>
 		<div data-role="content" >
 			<div id="comicTarget" style="width: 100%; height: 100%;" >
 				<img id="comicTarget" src="img/1x1.png" />
 			</div>
-			<script>
-				// (function() {
-		  //         var $section = $('div#comicTarget');
-		  //         $section.find('img#comicTarget').panzoom({
-		  //           startTransform: 'scale(0.5)',
-		  //           increment: 0.5,
-		  //           minScale: 1,
-		  //           contain: 'invert'
-		  //         }).panzoom('zoom');
-		  //       })();
-			</script>
 		</div>
 		<div data-role="footer" class="ui-grid-b" data-position="fixed" data-disable-page-zoom="false">
 			<div class="ui-block-a" >
@@ -185,7 +202,7 @@
 				<a data-role="button" data-mini="true" data-theme="b" data-inline="true" data-iconpos="left" data-icon="star" href="http://achewood.myshopify.com/" target="_blank" id="shopLink">Shop</a>
 			</div>
 			<div class="ui-block-c" style="text-align: right;">
-				<a href="#arcList" data-role="button" data-iconpos="right" data-rel="dialog" data-inline="true" data-mini="true" data-icon="arrow-d">Arcs</a>
+				<a href="#arcList" data-role="button" data-iconpos="right" data-rel="dialog" data-inline="true" data-mini="true" data-icon="arrow-u">more</a>
 			</div>
 		</div>
 	</div>
@@ -199,6 +216,7 @@
 		</div>
 		<div data-role="footer" data-theme="b">
 			<h6>
+				Achewood is &copy; Chris Onstad 2001-2013
 				<!-- <a href="#comic" data-role="button" data-inline="true" data-mini="true" data-icon="check" data-theme="d">Got it</a> -->
 			</h6>
 		</div>
@@ -209,10 +227,13 @@
 			<h1 class="logo">story arcs</h1>
 		</div><!-- /header -->
 		<ul data-role="listview" id="arcList">
-			<li><a href="#comic">Current Comic</a></li>
+			<li><a href="?" data-ajax="false">Current Comic</a></li>
+			<li><a id="randomLink" href="#comic">Random</a></li>
+
 		</ul>
 		<div data-role="footer" data-theme="b">
 			<h6>
+				Achewood is &copy; Chris Onstad 2001-2013
 				<!-- <a href="#comic" data-role="button" data-inline="true" data-mini="true" data-icon="check" data-theme="d">Got it</a> -->
 			</h6>
 		</div>
